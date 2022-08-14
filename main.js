@@ -1,7 +1,10 @@
 const player1 = 'X';
 const player2 = 'O';
 const boxElements = document.querySelectorAll(".box")
+const theWinner = document.querySelector('.winner p')
 let circleTurn;
+let currentPlayer;
+let stepCount = 0
 const winner = [
    [0, 1, 2],
    [3, 4 ,5],
@@ -20,34 +23,39 @@ boxElements.forEach(box => {
     box.addEventListener('click', handleClick, {once: true})
   })
 
-//function handleClick (e) {
-//	console.log('ide már klikkeltem')
-//   }
+// function handleClick (e) {
+// 	console.log('ide már klikkeltem')
+//    }
 
-// kirakja a markot
+ // kirakja a markot
 
-function handleClick (e) {
-   const box = e.target;
-   const currentPlayer = circleTurn ? player2 : player1;
-   markTheBox(box, currentPlayer);
-   swapPlayer ();
-   if (checkWin(currentPlayer)) {
-       console.log("win")
-   }
-}
+ function handleClick (e) {
+    const box = e.target;
+    currentPlayer = circleTurn ? player2 : player1;
+    markTheBox(box, currentPlayer);
+    circleTurn = !circleTurn;
+    if (checkWin(currentPlayer)) {
+        theWinner.textContent = `${currentPlayer} is the winner`
+        boxElements.forEach(box => {
+            box.removeEventListener('click', handleClick, {once: true})
+          })
+    } else if (stepCount === 9) {
+        theWinner.textContent = "It's a tie"
+        boxElements.forEach(box => {
+            box.removeEventListener('click', handleClick, {once: true})
+          })
+    }
+ }
 
-function markTheBox (box, currentPlayer) {
-       box.classList.add(currentPlayer)
-}
+ function markTheBox (box, currentPlayer) {
+        box.classList.add(currentPlayer)
+        stepCount++
+ }
 
-function swapPlayer() {
-    swapPlayer = !swapPlayer
-}
-
-function checkWin(currentPlayer) {
-   return winner.some(combo => {
-       return combo.every(index => {
-           return boxElements[index].classList.contains(currentPlayer)
-       })
-   })
-}
+ function checkWin(currentPlayer) {
+    return winner.some(combo => {
+        return combo.every(index => {
+            return boxElements[index].classList.contains(currentPlayer)
+        })
+    })
+ }
